@@ -32,3 +32,8 @@ compiler-makeself-posix:
 
 compiler-makeself-s-posix:
 	cd src && ./makeself.sh stable
+
+dist:
+	rm -rf dist
+	mkdir dist
+	cp src/cfiles/*.c dist
