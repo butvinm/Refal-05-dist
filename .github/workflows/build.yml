@@ -13,28 +13,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Setup environment
-      run: |
-        echo "R05CCOMP=gcc -Wall -O3 -g -DR05_POSIX" >> $GITHUB_ENV
-        echo "R05PATH=${{ github.workspace }}/lib:${{ github.workspace }}/src:${{ github.workspace }}/src/cfiles" >> $GITHUB_ENV
-    
-    - name: Build compiler from pre-generated C files
-      run: |
-        mkdir -p bin
-        gcc -Wall -O3 -g -DR05_POSIX -DR05_SHOW_STAT -I./lib -o./bin/refal05c-bootstrap dist/refal05c.c dist/R05-CompilerUtils.c dist/R05-Generator.c dist/R05-Parser.c dist/LibraryEx.c dist/R5FW-Parser-Defs.c dist/R5FW-Parser.c dist/R5FW-Plainer.c dist/R5FW-Transformer.c dist/Platform.c lib/refal05rts.c lib/Library.c
-        chmod +x bin/refal05c-bootstrap
-    
-    - name: Build new compiler using bootstrap version
-      run: |
-        cd src
-        echo Y | ../bin/refal05c-bootstrap refal05c R05-CompilerUtils R05-Generator R05-Parser LibraryEx R5FW-Parser-Defs R5FW-Parser R5FW-Plainer R5FW-Transformer Platform Library refal05rts
-        gcc -Wall -O3 -g -DR05_POSIX -DR05_SHOW_STAT -I../lib -orefal05c refal05c.c R05-CompilerUtils.c R05-Generator.c R05-Parser.c cfiles/LibraryEx.c cfiles/R5FW-Parser-Defs.c cfiles/R5FW-Parser.c cfiles/R5FW-Plainer.c cfiles/R5FW-Transformer.c cfiles/Platform.c ../lib/refal05rts.c ../lib/Library.c
-        mv refal05c ../bin/refal05c
-    
-    - name: Run autotests
-      run: |
-        cd autotests
-        ./run.sh
+    - name: Bootstrap
+      run: ./bootstrap.sh
     
     - name: Archive build artifacts
       uses: actions/upload-artifact@v4

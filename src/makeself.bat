@@ -6,31 +6,14 @@ setlocal
 
   md ..\bin 2>NUL
 
-  if {%1}=={stable} (
-    refc %MODULES%
-    move *.rsl ..\bin >NUL
-    set EXECUTABLE=refgo -l20 ../bin^(%MODULES: =+%^)+%LIBS: =+%
-  ) else (
-    set EXECUTABLE=..\bin\refal05c.exe
-  )
-
-  :: В опцию -o нельзя вставлять %EXECUTABLE%, приводит к ошибке.
-  if {%1}=={lambda} (
-    call rlmake --debug -o..\bin\refal05c.exe --ref5rsl refal05c.ref
-    echo.
-  )
-
-  if {%2}=={and_stop} goto :EOF
+  set EXECUTABLE=..\bin\refal05c.exe
 
   call ..\c-plus-plus.conf.bat
-  set R05CFLAGS=-DR05_SHOW_STAT %R05CFLAGS%
-  set R05PATH=..\lib
+  set R05CFLAGS=-Fe ..\bin\refal05c.exe -DR05_SHOW_STAT %R05CFLAGS%
+  set R05PATH=..\lib;.;cfiles
   echo Y|%EXECUTABLE% %MODULES% %LIBS% Library refal05rts
-  if exist a.exe move a.exe refal05c.exe
   if exist *.obj erase *.obj
   if exist *.tds erase *.tds
-
-  move refal05c.exe ..\bin >NUL
 
   md cfiles 2>NUL
   move *.c cfiles >NUL
